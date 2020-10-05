@@ -7,15 +7,18 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 )
 
+//Task represents a task
 type Task struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
+//GetTasksResponse represents a list of tasks
 type GetTasksResponse struct {
 	Tasks []Task `json:"tasks"`
 }
 
+//GetTasks lists all stored tasks
 func GetTasks(req events.APIGatewayProxyRequest) (
 	*events.APIGatewayProxyResponse,
 	error,
@@ -33,6 +36,7 @@ func GetTasks(req events.APIGatewayProxyRequest) (
 	return response(http.StatusOK, tasks)
 }
 
+//CreateTask stores a new task
 func CreateTask(req events.APIGatewayProxyRequest) (
 	*events.APIGatewayProxyResponse,
 	error,
@@ -43,6 +47,7 @@ func CreateTask(req events.APIGatewayProxyRequest) (
 	})
 }
 
+//MethodNotAllowed is invoked when the HTTP method is not supported
 func MethodNotAllowed() (*events.APIGatewayProxyResponse, error) {
 	return response(http.StatusMethodNotAllowed, "method not allowed")
 }

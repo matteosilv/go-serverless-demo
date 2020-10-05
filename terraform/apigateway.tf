@@ -50,7 +50,7 @@ resource "aws_api_gateway_deployment" "tasks" {
    ]
 
    rest_api_id = aws_api_gateway_rest_api.tasks.id
-   stage_name  = "staging"
+   stage_name  = "api"
 }
 
 resource "aws_lambda_permission" "apigw" {
