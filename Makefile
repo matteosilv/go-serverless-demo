@@ -1,5 +1,5 @@
 build:
-	GOOS=linux go build -o build/main main.go
+	GOOS=linux go build -o build/tasks-app tasks-app/main.go
 
 init:
 	terraform init terraform
