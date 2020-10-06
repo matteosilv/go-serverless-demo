@@ -3,40 +3,41 @@ resource "aws_api_gateway_rest_api" "tasks" {
   description = "Tasks Application"
 }
 
-resource "aws_api_gateway_resource" "proxy" {
+resource "aws_api_gateway_resource" "tasks" {
    rest_api_id = aws_api_gateway_rest_api.tasks.id
    parent_id   = aws_api_gateway_rest_api.tasks.root_resource_id
-   path_part   = "{proxy+}"
+   path_part   = "tasks"
 }
 
-resource "aws_api_gateway_method" "proxy" {
+resource "aws_api_gateway_method" "tasks_post" {
    rest_api_id   = aws_api_gateway_rest_api.tasks.id
-   resource_id   = aws_api_gateway_resource.proxy.id
-   http_method   = "ANY"
-   authorization = "NONE"
+   resource_id   = aws_api_gateway_resource.tasks.id
+   http_method   = "POST"
+   authorization = "CUSTOM"
+   authorizer_id = aws_api_gateway_authorizer.auth.id
 }
 
-resource "aws_api_gateway_integration" "lambda" {
+resource "aws_api_gateway_integration" "tasks_get" {
    rest_api_id = aws_api_gateway_rest_api.tasks.id
-   resource_id = aws_api_gateway_method.proxy.resource_id
-   http_method = aws_api_gateway_method.proxy.http_method
+   resource_id = aws_api_gateway_method.tasks_post.resource_id
+   http_method = aws_api_gateway_method.tasks_post.http_method
 
    integration_http_method = "POST"
    type                    = "AWS_PROXY"
    uri                     = aws_lambda_function.tasks.invoke_arn
 }
 
-resource "aws_api_gateway_method" "proxy_root" {
+resource "aws_api_gateway_method" "tasks_get" {
    rest_api_id   = aws_api_gateway_rest_api.tasks.id
-   resource_id   = aws_api_gateway_rest_api.tasks.root_resource_id
-   http_method   = "ANY"
+   resource_id   = aws_api_gateway_resource.tasks.id
+   http_method   = "GET"
    authorization = "NONE"
 }
 
-resource "aws_api_gateway_integration" "lambda_root" {
+resource "aws_api_gateway_integration" "tasks_post" {
    rest_api_id = aws_api_gateway_rest_api.tasks.id
-   resource_id = aws_api_gateway_method.proxy_root.resource_id
-   http_method = aws_api_gateway_method.proxy_root.http_method
+   resource_id = aws_api_gateway_method.tasks_get.resource_id
+   http_method = aws_api_gateway_method.tasks_get.http_method
 
    integration_http_method = "POST"
    type                    = "AWS_PROXY"
@@ -45,8 +46,8 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
 resource "aws_api_gateway_deployment" "tasks" {
    depends_on = [
-     aws_api_gateway_integration.lambda,
-     aws_api_gateway_integration.lambda_root,
+     aws_api_gateway_integration.tasks_get,
+     aws_api_gateway_integration.tasks_post,
    ]
 
    rest_api_id = aws_api_gateway_rest_api.tasks.id
@@ -59,7 +60,5 @@ resource "aws_lambda_permission" "apigw" {
    function_name = aws_lambda_function.tasks.function_name
    principal     = "apigateway.amazonaws.com"
 
-   # The "/*/*" portion grants access from any method on any resource
-   # within the API Gateway REST API.
    source_arn = "${aws_api_gateway_rest_api.tasks.execution_arn}/*/*"
 }
