@@ -1,6 +1,6 @@
 resource "aws_api_gateway_rest_api" "tasks" {
   name        = "Tasks"
-  description = "Tasks Application"
+  description = "Tasks Lambda"
 }
 
 resource "aws_api_gateway_resource" "tasks" {
@@ -9,6 +9,7 @@ resource "aws_api_gateway_resource" "tasks" {
    path_part   = "tasks"
 }
 
+//POST method authorized through custom authorizer
 resource "aws_api_gateway_method" "tasks_post" {
    rest_api_id   = aws_api_gateway_rest_api.tasks.id
    resource_id   = aws_api_gateway_resource.tasks.id
@@ -17,7 +18,7 @@ resource "aws_api_gateway_method" "tasks_post" {
    authorizer_id = aws_api_gateway_authorizer.auth.id
 }
 
-resource "aws_api_gateway_integration" "tasks_get" {
+resource "aws_api_gateway_integration" "tasks_post" {
    rest_api_id = aws_api_gateway_rest_api.tasks.id
    resource_id = aws_api_gateway_method.tasks_post.resource_id
    http_method = aws_api_gateway_method.tasks_post.http_method
@@ -27,6 +28,7 @@ resource "aws_api_gateway_integration" "tasks_get" {
    uri                     = aws_lambda_function.tasks.invoke_arn
 }
 
+//GET method without authorization
 resource "aws_api_gateway_method" "tasks_get" {
    rest_api_id   = aws_api_gateway_rest_api.tasks.id
    resource_id   = aws_api_gateway_resource.tasks.id
@@ -34,7 +36,7 @@ resource "aws_api_gateway_method" "tasks_get" {
    authorization = "NONE"
 }
 
-resource "aws_api_gateway_integration" "tasks_post" {
+resource "aws_api_gateway_integration" "tasks_get" {
    rest_api_id = aws_api_gateway_rest_api.tasks.id
    resource_id = aws_api_gateway_method.tasks_get.resource_id
    http_method = aws_api_gateway_method.tasks_get.http_method
@@ -52,6 +54,10 @@ resource "aws_api_gateway_deployment" "tasks" {
 
    rest_api_id = aws_api_gateway_rest_api.tasks.id
    stage_name  = "api"
+
+   lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lambda_permission" "apigw" {

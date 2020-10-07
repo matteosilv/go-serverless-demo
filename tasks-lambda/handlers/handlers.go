@@ -7,12 +7,12 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
-	"github.com/matteosilv/go-serverless-demo/tasks-app/tasks"
+	"github.com/matteosilv/go-serverless-demo/tasks-lambda/task"
 )
 
 //GetTasksResponse represents a list of tasks
 type GetTasksResponse struct {
-	Tasks []tasks.Task `json:"tasks"`
+	Tasks []task.Task `json:"tasks"`
 }
 
 type errorBody struct {
@@ -24,7 +24,7 @@ func GetTasks(req events.APIGatewayProxyRequest, table string, db dynamodbiface.
 	*events.APIGatewayProxyResponse,
 	error,
 ) {
-	result, err := tasks.GetTasks(req, table, db)
+	result, err := task.GetTasks(req, table, db)
 	if err != nil {
 		return response(http.StatusBadRequest, errorBody{
 			aws.String(err.Error()),
@@ -40,7 +40,7 @@ func CreateTask(req events.APIGatewayProxyRequest, table string, db dynamodbifac
 	*events.APIGatewayProxyResponse,
 	error,
 ) {
-	result, err := tasks.CreateTask(req, table, db)
+	result, err := task.CreateTask(req, table, db)
 	if err != nil {
 		return response(http.StatusBadRequest, errorBody{
 			aws.String(err.Error()),

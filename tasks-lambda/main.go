@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
-	"github.com/matteosilv/go-serverless-demo/tasks-app/handlers"
+	"github.com/matteosilv/go-serverless-demo/tasks-lambda/handlers"
 )
 
 var (

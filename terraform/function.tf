@@ -1,18 +1,22 @@
-data "archive_file" "app_zip" {
+//Create the archive file for tasks lambda deployment
+data "archive_file" "tasks_lambda" {
   type        = "zip"
-  source_file = "build/tasks-app"
-  output_path = "build/tasks-app.zip"
+  source_file = "build/tasks-lambda"
+  output_path = "build/tasks-lambda.zip"
 }
 
-resource "aws_iam_role" "app_exec" {
-  name = "tasks_app_lambda"
+//Role for tasks lambda
+resource "aws_iam_role" "tasks_lambda" {
+  name = "tasks_lambda"
 
   assume_role_policy = local.assume_role_policy
 }
 
-resource "aws_iam_policy" "tasks_table" {
+//Policy to read/write DynamoDB tasks table
+resource "aws_iam_role_policy" "tasks_table" {
   name        = "tasks_table"
-  policy = <<EOF
+  role        = aws_iam_role.tasks_lambda.id
+  policy      = <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -27,21 +31,17 @@ resource "aws_iam_policy" "tasks_table" {
 EOF
 }
 
-resource "aws_iam_policy_attachment" "tasks_table" {
-  name       = "tasks_table"
-  roles      = [aws_iam_role.app_exec.name]
-  policy_arn = aws_iam_policy.tasks_table.arn
-} 
-
+//Tasks lambda function
 resource "aws_lambda_function" "tasks" {
-  filename      = data.archive_file.app_zip.output_path
+  filename      = data.archive_file.tasks_lambda.output_path
   function_name = "Tasks"
-  role          = aws_iam_role.app_exec.arn
-  handler       = "tasks-app" # must match the name of the binary
-  source_code_hash = filebase64sha256(data.archive_file.app_zip.output_path)
+  role          = aws_iam_role.tasks_lambda.arn
+  handler       = "tasks-lambda" # must match the name of the binary
+  source_code_hash = filebase64sha256(data.archive_file.tasks_lambda.output_path)
   runtime = "go1.x"
 }
 
+//Tasks DynamoDB table
 resource "aws_dynamodb_table" "tasks" {
   name              = "tasks"
   read_capacity     = 5

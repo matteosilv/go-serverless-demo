@@ -8,10 +8,10 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-func basicAuth(req events.APIGatewayCustomAuthorizerRequestTypeRequest) (events.APIGatewayCustomAuthorizerResponse, error) {
+func basicAuth(req events.APIGatewayCustomAuthorizerRequest) (events.APIGatewayCustomAuthorizerResponse, error) {
 	mock := http.Request{
 		Header: map[string][]string{
-			"Authorization": {req.Headers["Authorization"]},
+			"Authorization": {req.AuthorizationToken},
 		},
 	}
 	username, password, ok := mock.BasicAuth()

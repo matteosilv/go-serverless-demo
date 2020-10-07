@@ -1,6 +1,9 @@
+clean:
+	rm -rf build
+
 build:
-	GOOS=linux go build -o build/tasks-app tasks-app/main.go
-	GOOS=linux go build -o build/auth auth/main.go
+	GOOS=linux go build -o build/tasks-lambda tasks-lambda/main.go
+	GOOS=linux go build -o build/auth-lambda  auth-lambda/main.go
 
 init:
 	terraform init terraform
