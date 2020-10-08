@@ -3,6 +3,8 @@ package task
 import (
 	"encoding/json"
 	"errors"
+	"log"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go/aws"
@@ -18,6 +20,7 @@ type Task struct {
 }
 
 func getTask(name string, table string, db dynamodbiface.DynamoDBAPI) (*Task, error) {
+	log.Printf("task.getTask: getting task with name %s from table %s", name, table)
 	result, err := db.GetItem(&dynamodb.GetItemInput{
 		Key: map[string]*dynamodb.AttributeValue{
 			"name": {
@@ -44,6 +47,7 @@ func GetTasks(req events.APIGatewayProxyRequest, table string, db dynamodbiface.
 	*[]Task,
 	error,
 ) {
+	log.Printf("task.GetTasks: listing tasks from table %s", table)
 	result, err := db.Scan(&dynamodb.ScanInput{
 		TableName: aws.String(table),
 	})
@@ -64,6 +68,8 @@ func CreateTask(req events.APIGatewayProxyRequest, table string, db dynamodbifac
 	if err := json.Unmarshal([]byte(req.Body), &t); err != nil {
 		return nil, errors.New("Invalid task provided")
 	}
+	//replacing new lines with carriage returns, otherwise CloudWatch seems to store an event per line
+	log.Printf("task.CreateTask: writing new task to table %s: %s", table, strings.Replace(req.Body, "\n", "\r", -1))
 
 	// Check if tasks exists
 	dbTask, _ := getTask(t.Name, table, db)

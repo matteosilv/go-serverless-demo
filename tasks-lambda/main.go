@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"log"
 	"os"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -32,16 +30,6 @@ func main() {
 }
 
 func handler(req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	// event
-	reqJSON, _ := json.MarshalIndent(req, "", "  ")
-	log.Printf("EVENT: %s", reqJSON)
-	// environment variables
-	log.Printf("REGION: %s", os.Getenv("AWS_REGION"))
-	log.Println("ALL ENV VARS:")
-	for _, element := range os.Environ() {
-		log.Println(element)
-	}
-
 	switch req.HTTPMethod {
 	case "GET":
 		return handlers.GetTasks(req, table, db)

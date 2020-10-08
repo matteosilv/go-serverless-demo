@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -24,8 +25,10 @@ func GetTasks(req events.APIGatewayProxyRequest, table string, db dynamodbiface.
 	*events.APIGatewayProxyResponse,
 	error,
 ) {
+	log.Printf("handlers.GetTasks: listing tasks from table %s", table)
 	result, err := task.GetTasks(req, table, db)
 	if err != nil {
+		log.Printf("handlers.GetTasks: error listing tasks from table %s: %s", table, err.Error())
 		return response(http.StatusBadRequest, errorBody{
 			aws.String(err.Error()),
 		})
@@ -40,8 +43,10 @@ func CreateTask(req events.APIGatewayProxyRequest, table string, db dynamodbifac
 	*events.APIGatewayProxyResponse,
 	error,
 ) {
+	log.Printf("handlers.CreateTask: writing new task to table %s", table)
 	result, err := task.CreateTask(req, table, db)
 	if err != nil {
+		log.Printf("handlers.CreateTask: error writing new task to table %s: %s", table, err.Error())
 		return response(http.StatusBadRequest, errorBody{
 			aws.String(err.Error()),
 		})
