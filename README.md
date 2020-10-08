@@ -20,7 +20,7 @@ Tasks are stored in a [AWS DynamoDB](https://aws.amazon.com/dynamodb/) table.
 
 The lambda function is served via [AWS API Gateway](https://aws.amazon.com/it/api-gateway/) and the POST endpoint is
 authorized via the **Auth** [Custom Authorizer](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html) written in Go
-that recognize only the hardcoded user *admin* via HTTP Basic Authentication.
+that recognizes only the hardcoded user *admin* via HTTP Basic Authentication.
 
 Logs are stored in [CloudWatch](https://aws.amazon.com/it/cloudwatch/) and streamed to an [AWS ElasticSearch](https://aws.amazon.com/it/elasticsearch-service/) domain through a
 [Subscription Filter](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/SubscriptionFilters.html#LambdaFunctionExample).
@@ -114,6 +114,5 @@ Use the URL in the `tasks_api_url` terraform output to test your api
 Use the URLs in the `elasticsearch_kibana_url` and `elasticsearch_url` to
 search logs streamed to elasticsearch domain via [Kibana](https://www.elastic.co/kibana) or ElasticSearch APIs.
 
-Your public ip should be authorized to access ElasticSearch and Kibana through an
-access policy deployed through Terraform.
+Your public ip should be authorized to access via HTTP ElasticSearch and Kibana thanks to an access policy deployed through Terraform.
 
