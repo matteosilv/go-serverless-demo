@@ -17,6 +17,7 @@ data "http" "public_ip" {
   url = "https://icanhazip.com/"
 }
 
+//Allow our public ip to access ElasticSearch and Kibana via HTTP
 resource "aws_elasticsearch_domain_policy" "main" {
   domain_name = aws_elasticsearch_domain.lambda.domain_name
 
