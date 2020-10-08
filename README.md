@@ -1,11 +1,11 @@
 # Golang serverless demo 
 
-A demo of a servless application backed by an [AWS Lambda](https://aws.amazon.com/it/lambda/) function written in Go.
+A demo of a serverless application backed by an [AWS Lambda](https://aws.amazon.com/it/lambda/) function written in Go.
 
-The **Tasks** lambda function consist of two endpoints:
+The **Tasks** lambda function consists of two endpoints:
 
 - **GET**: list created tasks
-- **POST**: create a new tasks
+- **POST**: create new tasks
 
 An example of task record is:
 
@@ -35,7 +35,7 @@ The whole infrastructure can be deployed using Terraform.
 
 ### Terraform and Go
 
-Install [Terraform](https://www.terraform.io/), [Go](https://golang.org/) and the [AWS Command Line Interface](https://aws.amazon.com/it/cli/). 
+Install [Terraform](https://www.terraform.io/), [Go](https://golang.org/), and the [AWS Command Line Interface](https://aws.amazon.com/it/cli/). 
 
 On macOS you can use [Homebrew](https://brew.sh/):
 
@@ -83,7 +83,7 @@ make init
 
 ### Review terraform plan
 
-Review terraform changes that will be applied on the infrastructure
+Review terraform changes that will be applied to the infrastructure
 
 ```shell
 make plan
