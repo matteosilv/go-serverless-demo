@@ -10,7 +10,6 @@ import (
 )
 
 func basicAuth(req events.APIGatewayCustomAuthorizerRequest) (events.APIGatewayCustomAuthorizerResponse, error) {
-	log.Printf("main.basicAuth: Authorization token provided: %s", req.AuthorizationToken)
 	mock := http.Request{
 		Header: map[string][]string{
 			"Authorization": {req.AuthorizationToken},

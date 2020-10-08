@@ -11,11 +11,11 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 output "elasticsearch_url" {
-  value = aws_elasticsearch_domain.lambda.endpoint
+  value = "https://${aws_elasticsearch_domain.lambda.endpoint}"
 }
 
 output "elasticsearch_kibana_url" {
-  value = aws_elasticsearch_domain.lambda.kibana_endpoint
+  value = "https://${aws_elasticsearch_domain.lambda.kibana_endpoint}"
 }
 
 //Assume role policy for tasks and auth lambda functions
