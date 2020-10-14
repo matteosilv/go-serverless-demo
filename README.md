@@ -120,6 +120,8 @@ Your public ip should be authorized to access via HTTP ElasticSearch and Kibana 
 
 * Design test cases and implements tests to reach a reasonable coverage
 * Implement a CI and/or CD process (e.g. using [GitHub Actions](https://github.com/features/actions))
+* Implement blue/green deployment, canary deployment
 * Replace the Auth mock with a real custom authenticator using a source of authorities (e.g. a database)
 * Improve logging and log collecting using a specific pattern to collect logs
+* Collect also metrics on API calls for example on CloudWatch
 
